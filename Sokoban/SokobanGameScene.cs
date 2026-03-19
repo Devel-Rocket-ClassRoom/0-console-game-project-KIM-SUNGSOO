@@ -8,7 +8,7 @@ public class SokobanGameScene : Scene
 {
     private TileMap map;
 
-    public event GameAction StageCleard;
+    public event GameAction StageCleared;
 
     public override void Draw(ScreenBuffer buffer)
     {
@@ -31,7 +31,7 @@ public class SokobanGameScene : Scene
         UpdateGameObjects(deltaTime);
         if (map.IsCleared())
         {
-            StageCleard?.Invoke();
+            StageCleared?.Invoke();
         }
     }
 }

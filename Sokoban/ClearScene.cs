@@ -4,7 +4,7 @@ using System;
 
 public class ClearScene : Scene
 {
-    private event GameAction NextRequested;
+    public event GameAction NextRequested;
     
 
     public override void Load()

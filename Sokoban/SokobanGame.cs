@@ -48,10 +48,23 @@ public class SokobanGame : GameApp
         title.StartRequested += ChangeToPlay;
         _scene.ChangeScene(title);
     }
-    private void ChangeToPlay() //시작화면에서 스테이지1 맵으로 화면 전환
+    private void ChangeToPlay()
     {
-        var play = new SokobanGameScene();
-        _scene.ChangeScene(play);
+        var game = new SokobanGameScene();
+        game.StageCleared += ChangeToClear;
+
+        _scene.ChangeScene(game);
     }
-    
+
+    private void ChangeToClear()
+    {
+        var clear = new ClearScene();
+        clear.NextRequested += ChangeToPlay;
+
+        _scene.ChangeScene(clear);
+    }
+
+
+
+
 }
