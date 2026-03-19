@@ -6,6 +6,7 @@ using System.Text;
 public class SokobanGameScene : Scene
 {
     private TileMap map;
+
     public override void Draw(ScreenBuffer buffer)
     {
         DrawGameObjects(buffer);
