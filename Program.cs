@@ -1,1 +1,1 @@
-return;
+new SokobanGame().Run();
