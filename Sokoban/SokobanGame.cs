@@ -14,43 +14,44 @@ public class SokobanGame : GameApp
     //    Console.SetWindowSize(80, 30);
     //    Console.SetBufferSize(80, 30);
     //}
-    public SokobanGame() : base(40, 20)
-    {
+     public SokobanGame() : base(40, 20)
+     {
 
-    }
-    public SokobanGame(int width, int height) : base(width, height)
-    {
-    }
+     }
+     public SokobanGame(int width, int height) : base(width, height)
+     {
+     }
 
-    protected override void Draw() //Tilte Scene 구성
-    {
+     protected override void Draw() //Tilte Scene 구성
+     {
         _scene.CurrentScene?.Draw(Buffer);
-    }
+     }
 
-    protected override void Initialize()
-    {
-        ChangeToTitle();
-    }
+     protected override void Initialize()
+     {
+         ChangeToTitle();
+     }
 
-    protected override void Update(float deltaTime) //Title 부분에서 esc누르면 게임 종료 
-    {
+     protected override void Update(float deltaTime) //Title 부분에서 esc누르면 게임 종료 
+     {
         if (Input.IsKeyDown(ConsoleKey.Escape))
         {
             Quit();
             return;
         }
         _scene.CurrentScene?.Update(deltaTime);
-    }
+     }
 
-   private void ChangeToTitle()
-   {
+    private void ChangeToTitle()
+    {
         var title = new socobanTitleScene();
         title.StartRequested += ChangeToPlay;
         _scene.ChangeScene(title);
-   }
-   private void ChangeToPlay() //시작화면에서 스테이지1 맵으로 화면 전환
-   {
+    }
+    private void ChangeToPlay() //시작화면에서 스테이지1 맵으로 화면 전환
+    {
         var play = new SokobanGameScene();
         _scene.ChangeScene(play);
     }
+    
 }

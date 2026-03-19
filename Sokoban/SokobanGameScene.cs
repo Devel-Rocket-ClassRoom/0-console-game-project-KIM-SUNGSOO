@@ -1,11 +1,14 @@
 ﻿using Framework.Engine;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 public class SokobanGameScene : Scene
 {
     private TileMap map;
+
+    public event GameAction StageCleard;
 
     public override void Draw(ScreenBuffer buffer)
     {
@@ -26,5 +29,9 @@ public class SokobanGameScene : Scene
     public override void Update(float deltaTime)
     {
         UpdateGameObjects(deltaTime);
+        if (map.IsCleared())
+        {
+            StageCleard?.Invoke();
+        }
     }
 }

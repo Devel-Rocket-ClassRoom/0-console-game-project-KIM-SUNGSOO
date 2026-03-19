@@ -7,18 +7,19 @@ public class TileMap : GameObject
 
     private int playerPosX;
     private int playerPosY;
-
+    private int fillCount = 0; //채워진 박스 갯수
+    private int moveCount = 0; //캐릭터 총 이동 횟
     public int Width => tileMap[0].Length;
     public int Height => tileMap.Length;
 
     // 타일 정의 (중요)
-    const char WALL = '#';
-    const char FLOOR = ' ';
-    const char PLAYER = 'P';
-    const char BOX = 'B';
-    const char GOAL = 'X';
-    const char BOX_ON_GOAL = '*';
-    const char PLAYER_ON_GOAL = '+';
+    const char WALL = '#'; // 벽
+    const char FLOOR = ' '; //빈 공간 (이동 가능 범위)
+    const char PLAYER = 'P'; // 플레이어 캐릭터 위치
+    const char BOX = 'B'; //박스 위치
+    const char GOAL = 'X'; //골인 지점 위치
+    const char BOX_ON_GOAL = '*'; //박스가 골인지점에 들어갔을때 
+    const char PLAYER_ON_GOAL = '+'; //플레이어가 골인지점위에 있을때
 
     public TileMap(Scene scene) : base(scene)
     {
@@ -26,9 +27,11 @@ public class TileMap : GameObject
         {
             "########",
             "#      #",
+            "#      #",
             "#  P   #",
             "#  B   #",
             "#  X   #",
+            "#      #",
             "#      #",
             "########"
         };
@@ -75,10 +78,10 @@ public class TileMap : GameObject
                         buffer.SetCell(x, y, 'X', ConsoleColor.Red);
                         break;
                     case PLAYER_ON_GOAL:
-                        buffer.SetCell(x, y, '+', ConsoleColor.Cyan);
+                        buffer.SetCell(x, y, 'P', ConsoleColor.Red);
                         break;
                     case BOX_ON_GOAL:
-                        buffer.SetCell(x, y, '*', ConsoleColor.Blue);
+                        buffer.SetCell(x, y, 'B', ConsoleColor.Red);
                         break;
                     default:
                         buffer.SetCell(x, y, ' ');
