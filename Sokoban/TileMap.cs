@@ -1,23 +1,28 @@
 ﻿using Framework.Engine;
 using System;
-using System.Buffers;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 public class TileMap : GameObject
 {
-    private string[] map;
+    private string[] tileMap;
 
-    private int playerX;
-    private int playerY;
-    public int Width => map[0].Length;
-    public int Height => map.Length;
+    private int playerPosX;
+    private int playerPosY;
+
+    public int Width => tileMap[0].Length;
+    public int Height => tileMap.Length;
+
+    // 타일 정의 (중요)
+    const char WALL = '#';
+    const char FLOOR = ' ';
+    const char PLAYER = 'P';
+    const char BOX = 'B';
+    const char GOAL = 'X';
+    const char BOX_ON_GOAL = '*';
+    const char PLAYER_ON_GOAL = '+';
 
     public TileMap(Scene scene) : base(scene)
     {
-        map = new string[]
+        tileMap = new string[]
         {
             "########",
             "#      #",
@@ -28,14 +33,15 @@ public class TileMap : GameObject
             "########"
         };
 
-        for (int y = 0; y < map.Length; y++)
+        //  플레이어 위치 찾기
+        for (int y = 0; y < tileMap.Length; y++)
         {
-            for (int x = 0; x < map[y].Length; x++)
+            for (int x = 0; x < tileMap[y].Length; x++)
             {
-                if (map[y][x] == 'P')
+                if (tileMap[y][x] == PLAYER)
                 {
-                    playerX = x;
-                    playerY = y;
+                    playerPosX = x;
+                    playerPosY = y;
                 }
             }
         }
@@ -48,35 +54,31 @@ public class TileMap : GameObject
 
     public override void Draw(ScreenBuffer buffer)
     {
-        for (int y = 0; y < map.Length; y++)
+        for (int y = 0; y < tileMap.Length; y++)
         {
-            for (int x = 0; x < map[y].Length; x++)
+            for (int x = 0; x < tileMap[y].Length; x++)
             {
-                char tile = map[y][x];
+                char tile = tileMap[y][x];
 
                 switch (tile)
                 {
-                    case '#':
+                    case WALL:
                         buffer.SetCell(x, y, '#', ConsoleColor.White);
                         break;
-
-                    case 'P':
+                    case PLAYER:
                         buffer.SetCell(x, y, 'P', ConsoleColor.Green);
                         break;
-
-                    case 'B':
+                    case BOX:
                         buffer.SetCell(x, y, 'B', ConsoleColor.Yellow);
                         break;
-
-                    case 'X':
+                    case GOAL:
                         buffer.SetCell(x, y, 'X', ConsoleColor.Red);
                         break;
-                    case '+':
+                    case PLAYER_ON_GOAL:
                         buffer.SetCell(x, y, '+', ConsoleColor.Cyan);
                         break;
-
-                    case '*':
-                        buffer.SetCell(x, y, '*', ConsoleColor.DarkBlue);
+                    case BOX_ON_GOAL:
+                        buffer.SetCell(x, y, '*', ConsoleColor.Blue);
                         break;
                     default:
                         buffer.SetCell(x, y, ' ');
@@ -86,81 +88,88 @@ public class TileMap : GameObject
         }
     }
 
+    //  타일 수정
     void SetTile(int x, int y, char value)
     {
-        char[] row = map[y].ToCharArray();
+        char[] row = tileMap[y].ToCharArray();
         row[x] = value;
-        map[y] = new string(row);
+        tileMap[y] = new string(row);
     }
 
+    // 플레이어 이동
     void MovePlayer(int newX, int newY)
     {
         // 이전 위치 복구
-        if (map[playerY][playerX] == '+')
-            SetTile(playerX, playerY, 'X');
+        if (tileMap[playerPosY][playerPosX] == PLAYER_ON_GOAL)
+            SetTile(playerPosX, playerPosY, GOAL);
         else
-            SetTile(playerX, playerY, ' ');
+            SetTile(playerPosX, playerPosY, FLOOR);
 
         // 이동 위치 처리
-        if (map[newY][newX] == 'X')
-            SetTile(newX, newY, '+');
+        if (tileMap[newY][newX] == GOAL)
+            SetTile(newX, newY, PLAYER_ON_GOAL);
         else
-            SetTile(newX, newY, 'P');
+            SetTile(newX, newY, PLAYER);
 
-        playerX = newX;
-        playerY = newY;
+        playerPosX = newX;
+        playerPosY = newY;
     }
-    void MoveBox(int boxX, int boxY, int newX, int newY)
-    {
-        // 목적지
-        if (map[newY][newX] == 'X')
-            SetTile(newX, newY, '*');
-        else
-            SetTile(newX, newY, 'B');
-        
 
+    // 박스 이동
+    void MoveBox(int boxPosX, int boxPosY, int newX, int newY)
+    {
+        // 목적지 처리
+        if (tileMap[newY][newX] == GOAL)
+            SetTile(newX, newY, BOX_ON_GOAL);
+        else
+            SetTile(newX, newY, BOX);
 
         // 기존 위치 복구
-        if (map[boxY][boxX] == '*')
-            SetTile(boxX, boxY, 'X');
+        if (tileMap[boxPosY][boxPosX] == BOX_ON_GOAL)
+            SetTile(boxPosX, boxPosY, GOAL);
         else
-            SetTile(boxX, boxY, ' ');
+            SetTile(boxPosX, boxPosY, FLOOR);
     }
 
+    //  이동 처리 핵심
     void TryMove(int dx, int dy)
     {
-        int nextX = playerX + dx;
-        int nextY = playerY + dy;
+        int nextX = playerPosX + dx;
+        int nextY = playerPosY + dy;
 
-        int nextNextX = playerX + dx * 2;
-        int nextNextY = playerY + dy * 2;
+        int nextNextX = playerPosX + dx * 2;
+        int nextNextY = playerPosY + dy * 2;
 
-        char next = map[nextY][nextX];
+        char nextTile = tileMap[nextY][nextX];
 
-        // 벽이면 이동 불가
-        if (next == '#') return;
+        // 벽
+        if (nextTile == WALL) return;
 
-        // 빈칸 or 목표
-        if (next == ' ' || next == 'X')
+        // 이동 가능
+        if (nextTile == FLOOR || nextTile == GOAL)
         {
             MovePlayer(nextX, nextY);
         }
         // 박스
-        else if (next == 'B')
+        else if (nextTile == BOX || nextTile == BOX_ON_GOAL)
         {
-            char nextNext = map[nextNextY][nextNextX];
-            //공 뒤에 공간이 없을 시 움직일수 없음
-            if (nextNext != ' ' && nextNext != 'X')
+            //  범위 체크 (안정성)
+            if (nextNextX < 0 || nextNextX >= Width ||
+                nextNextY < 0 || nextNextY >= Height)
                 return;
-            //공 뒤에 비어있으면 이동 가능
-            if (nextNext == ' ' || nextNext == 'X')
-            {
-                MoveBox(nextX, nextY, nextNextX, nextNextY);
-                MovePlayer(nextX, nextY);
-            }
+
+            char nextNextTile = tileMap[nextNextY][nextNextX];
+
+            // 뒤가 막혀있으면 이동 불가
+            if (nextNextTile != FLOOR && nextNextTile != GOAL)
+                return;
+
+            MoveBox(nextX, nextY, nextNextX, nextNextY);
+            MovePlayer(nextX, nextY);
         }
-        
     }
+
+    //  입력 처리
     void HandleInput()
     {
         int dx = 0, dy = 0;
@@ -176,8 +185,17 @@ public class TileMap : GameObject
         }
     }
 
-    
-    
-    
-    
+    //  클리어 조건
+    public bool IsCleared()
+    {
+        for (int y = 0; y < tileMap.Length; y++)
+        {
+            for (int x = 0; x < tileMap[y].Length; x++)
+            {
+                if (tileMap[y][x] == BOX)
+                    return false;
+            }
+        }
+        return true;
+    }
 }
