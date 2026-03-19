@@ -6,10 +6,17 @@ using System.Text;
 public class SokobanGame : GameApp
 {
     private readonly SceneManager<Scene>  _scene = new SceneManager<Scene>();
-    public SokobanGame() : base(80, 30)
+
+
+    //public SokobanGame() : base(80, 30) //콘솔 기본 사이즈를 넘어선 사이즈가 나올 수 있으므로 추후에 스테이지
+    //                                    //구성을 위한 기본 사이즈 지정
+    //{
+    //    Console.SetWindowSize(80, 30);
+    //    Console.SetBufferSize(80, 30);
+    //}
+    public SokobanGame() : base(40, 20)
     {
-        Console.SetWindowSize(80, 30);
-        Console.SetBufferSize(80, 30);
+
     }
     public SokobanGame(int width, int height) : base(width, height)
     {
@@ -43,6 +50,7 @@ public class SokobanGame : GameApp
    }
    private void ChangeToPlay()
    {
-
-   }
+        var play = new SokobanGameScene();
+        _scene.ChangeScene(play);
+    }
 }
