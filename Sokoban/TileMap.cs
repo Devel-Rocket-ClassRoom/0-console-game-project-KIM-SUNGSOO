@@ -11,6 +11,71 @@ public class TileMap : GameObject
     private int moveCount = 0; //캐릭터 총 이동 횟
     public int Width => tileMap[0].Length;
     public int Height => tileMap.Length;
+    private string[] LoadStage(int stageIndex)
+    {
+        switch (stageIndex)
+        {
+            case 1:
+                return new string[]
+                {
+                "##########",
+                "#   P    #",
+                "#   B    #",
+                "#   B    #",
+                "#   X    #",
+                "#   X    #",
+                "##########"
+                };
+
+            case 2:
+                return new string[]
+                {
+                    "  ###   ",
+                    "  #X#   ",
+                    "  # ####",
+                    "###B BX#",
+                    "#X BP###",
+                    "####B#  ",
+                    "   #X#  ",
+                    "   ###  "
+                };
+
+            case 3:
+                return new string[]
+                {
+                    "#####    ",
+                    "#P  #    ",
+                    "# BB# ###",
+                    "# B # #X#",
+                    "### ###X#",
+                    " ##    X#",
+                    " #   #  #",
+                    " #   ####",
+                    " #####   "
+                };
+            case 4:
+                return new string[]
+                {
+                    " #######  ",
+                    " #     ###",
+                    "##B###   #",
+                    "# P B  B #",
+                    "# XX# B ##",
+                    "##XX#   # ",
+                    " ######## "
+                };
+
+            default:
+                return new string[]
+                {
+                "#####",
+                "# P #",
+                "# B #",
+                "# X #",
+                "#####"
+                };
+        }
+    }
 
     // 타일 정의 (중요)
     const char WALL = '#'; // 벽
@@ -21,20 +86,11 @@ public class TileMap : GameObject
     const char BOX_ON_GOAL = '*'; //박스가 골인지점에 들어갔을때 
     const char PLAYER_ON_GOAL = '+'; //플레이어가 골인지점위에 있을때
 
-    public TileMap(Scene scene) : base(scene)
+
+    
+    public TileMap(Scene scene, int stageIndex) : base(scene)
     {
-        tileMap = new string[]
-        {
-            "########",
-            "#      #",
-            "#      #",
-            "#  P   #",
-            "#  B   #",
-            "#  X   #",
-            "#      #",
-            "#      #",
-            "########"
-        };
+        tileMap = LoadStage(stageIndex);
 
         //  플레이어 위치 찾기
         for (int y = 0; y < tileMap.Length; y++)

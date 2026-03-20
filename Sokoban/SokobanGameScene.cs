@@ -7,9 +7,13 @@ using System.Text;
 public class SokobanGameScene : Scene
 {
     private TileMap map;
+    private int stageIndex;
 
     public event GameAction StageCleared;
-
+    public SokobanGameScene(int stageIndex)
+    {
+        this.stageIndex = stageIndex;
+    }
     public override void Draw(ScreenBuffer buffer)
     {
         DrawGameObjects(buffer);
@@ -17,7 +21,7 @@ public class SokobanGameScene : Scene
 
     public override void Load()
     {
-        map = new TileMap(this);
+        map = new TileMap(this, stageIndex);
         AddGameObject(map);
     }
 
