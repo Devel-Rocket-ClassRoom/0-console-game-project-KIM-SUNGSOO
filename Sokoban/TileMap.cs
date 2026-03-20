@@ -145,6 +145,7 @@ public class TileMap : GameObject
                 }
             }
         }
+        buffer.WriteText(0,tileMap.Length+1 , $"총 이동 횟수 {moveCount}번", ConsoleColor.White);
     }
 
     //  타일 수정
@@ -208,6 +209,7 @@ public class TileMap : GameObject
         if (nextTile == FLOOR || nextTile == GOAL)
         {
             MovePlayer(nextX, nextY);
+            moveCount++;
         }
         // 박스
         else if (nextTile == BOX || nextTile == BOX_ON_GOAL)
@@ -225,6 +227,7 @@ public class TileMap : GameObject
 
             MoveBox(nextX, nextY, nextNextX, nextNextY);
             MovePlayer(nextX, nextY);
+            moveCount++;
         }
     }
 
