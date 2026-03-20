@@ -5,6 +5,7 @@ public class TileMap : GameObject
 {
     private string[] tileMap;
 
+    private int totalGoalCount = 0;
     private int playerPosX;
     private int playerPosY;
     public int fillCount = 0; //채워진 박스 갯수
@@ -91,6 +92,7 @@ public class TileMap : GameObject
     public TileMap(Scene scene, int stageIndex) : base(scene)
     {
         tileMap = LoadStage(stageIndex);
+        CountGoals();
 
         //  플레이어 위치 찾기
         for (int y = 0; y < tileMap.Length; y++)
@@ -146,6 +148,7 @@ public class TileMap : GameObject
             }
         }
         buffer.WriteText(0,tileMap.Length+1 , $"총 이동 횟수 {moveCount}번", ConsoleColor.White);
+        buffer.WriteText(0, tileMap.Length + 2, $"현재 채워진 목표점 {GetFilledGoalCount()}/전체 목표수 {totalGoalCount}");
     }
 
     //  타일 수정
@@ -245,6 +248,38 @@ public class TileMap : GameObject
         {
             TryMove(dx, dy);
         }
+    }
+    private void CountGoals()
+    {
+        totalGoalCount = 0;
+
+        for (int y = 0; y < tileMap.Length; y++)
+        {
+            for (int x = 0; x < tileMap[y].Length; x++)
+            {
+                if (tileMap[y][x] == 'X')
+                {
+                    totalGoalCount++;
+                }
+            }
+        }
+    }
+    public int GetFilledGoalCount()
+    {
+        int count = 0;
+
+        for (int y = 0; y < tileMap.Length; y++)
+        {
+            for (int x = 0; x < tileMap[y].Length; x++)
+            {
+                if (tileMap[y][x] == '*') // 박스 + 목표
+                {
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 
     //  클리어 조건
