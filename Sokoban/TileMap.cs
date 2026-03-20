@@ -7,8 +7,8 @@ public class TileMap : GameObject
 
     private int playerPosX;
     private int playerPosY;
-    private int fillCount = 0; //채워진 박스 갯수
-    private int moveCount = 0; //캐릭터 총 이동 횟
+    public int fillCount = 0; //채워진 박스 갯수
+    public int moveCount = 0; //캐릭터 총 이동 횟수
     public int Width => tileMap[0].Length;
     public int Height => tileMap.Length;
     private string[] LoadStage(int stageIndex)

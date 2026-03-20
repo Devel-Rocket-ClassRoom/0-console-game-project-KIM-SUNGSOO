@@ -9,7 +9,7 @@ public class SokobanGameScene : Scene
     private TileMap map;
     private int stageIndex;
 
-    public event GameAction StageCleared;
+    public event GameAction<int> StageCleared;
     public SokobanGameScene(int stageIndex)
     {
         this.stageIndex = stageIndex;
@@ -35,7 +35,7 @@ public class SokobanGameScene : Scene
         UpdateGameObjects(deltaTime);
         if (map.IsCleared())
         {
-            StageCleared?.Invoke();
+            StageCleared?.Invoke(map.moveCount);
         }
     }
 }

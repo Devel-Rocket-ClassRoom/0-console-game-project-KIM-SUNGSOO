@@ -5,8 +5,14 @@ using System;
 public class ClearScene : Scene
 {
     public event GameAction NextRequested;
-    
 
+
+    private int moveCount;
+
+    public ClearScene(int moveCount)
+    {
+        this.moveCount = moveCount;
+    }
     public override void Load()
     {
         
@@ -27,6 +33,8 @@ public class ClearScene : Scene
     public override void Draw(ScreenBuffer buffer)
     {
         buffer.WriteTextCentered(10, "STAGE CLEAR!", ConsoleColor.Green);
-        buffer.WriteTextCentered(12, "Press ENTER to Continue", ConsoleColor.White);
+        buffer.WriteTextCentered(12, $"Total Moves: {moveCount}", ConsoleColor.Yellow);
+        buffer.WriteTextCentered(14, "Press ENTER to Continue", ConsoleColor.White);
+        
     }
 }

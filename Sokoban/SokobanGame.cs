@@ -9,12 +9,9 @@ public class SokobanGame : GameApp
 
     private int currentStage = 1;
 
-    //public SokobanGame() : base(80, 30) //콘솔 기본 사이즈를 넘어선 사이즈가 나올 수 있으므로 추후에 스테이지
-    //                                    //구성을 위한 기본 사이즈 지정
-    //{
-    //    Console.SetWindowSize(80, 30);
-    //    Console.SetBufferSize(80, 30);
-    //}
+    private const int MAX_STAGE = 4;
+
+
     public SokobanGame() : base(40, 20)
      {
 
@@ -57,13 +54,32 @@ public class SokobanGame : GameApp
         _scene.ChangeScene(game);
     }
 
-    private void ChangeToClear()
+    private void ChangeToClear(int moveCount)
     {
+        if (currentStage >= MAX_STAGE)
+        {
+            ChangeToFinalClear(moveCount);
+            return;
+        }
+
         currentStage++;
-        var clear = new ClearScene();
+
+        var clear = new ClearScene(moveCount);
         clear.NextRequested += ChangeToPlay;
 
         _scene.ChangeScene(clear);
+    }
+    private void ChangeToFinalClear(int moveCount)
+    {
+        var final = new FinalClearScene(moveCount);
+
+        final.RestartRequested += () =>
+        {
+            currentStage = 1; // 다시 시작
+            ChangeToPlay();
+        };
+
+        _scene.ChangeScene(final);
     }
 
 
