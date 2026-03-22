@@ -1,9 +1,12 @@
 ﻿using Framework.Engine;
 using System;
+using static System.Net.Mime.MediaTypeNames;
 
 public class TileMap : GameObject
 {
     private string[] tileMap;
+
+    public event Action TrapTriggered;
 
     private int totalGoalCount = 0;
     private int playerPosX;
@@ -65,8 +68,21 @@ public class TileMap : GameObject
                     "##XX#   # ",
                     " ######## "
                 };
+            case 5:
+                return new string[]
+                {
+                    " #######   ###",
+                    "##     ##### #",
+                    "#T  P        #",
+                    "#X B         #",
+                    "##  T       ###",
+                    " #      B  #  ",
+                    " #     T   #  ",
+                    " # TXT     #  ",
+                    " ###########  ",
+                };
 
-            default:
+                default:
                 return new string[]
                 {
                 "#####",
@@ -86,7 +102,7 @@ public class TileMap : GameObject
     const char GOAL = 'X'; //골인 지점 위치
     const char BOX_ON_GOAL = '*'; //박스가 골인지점에 들어갔을때 
     const char PLAYER_ON_GOAL = '+'; //플레이어가 골인지점위에 있을때
-
+    const char TRAP = 'T'; //캐릭터가 밟으면 게임이 실패하는 함정
 
     
     public TileMap(Scene scene, int stageIndex) : base(scene)
@@ -141,6 +157,9 @@ public class TileMap : GameObject
                     case BOX_ON_GOAL:
                         buffer.SetCell(x, y, 'B', ConsoleColor.Red);
                         break;
+                    case TRAP:
+                        buffer.SetCell(x, y, 'T', ConsoleColor.Blue);
+                        break;
                     default:
                         buffer.SetCell(x, y, ' ');
                         break;
@@ -173,6 +192,7 @@ public class TileMap : GameObject
             SetTile(newX, newY, PLAYER_ON_GOAL);
         else
             SetTile(newX, newY, PLAYER);
+
 
         playerPosX = newX;
         playerPosY = newY;
@@ -207,6 +227,12 @@ public class TileMap : GameObject
 
         // 벽
         if (nextTile == WALL) return;
+
+        if (nextTile == TRAP)
+        {
+            OnTrapTriggered();
+            return;
+        }
 
         // 이동 가능
         if (nextTile == FLOOR || nextTile == GOAL)
@@ -249,7 +275,7 @@ public class TileMap : GameObject
             TryMove(dx, dy);
         }
     }
-    private void CountGoals()
+    private void CountGoals() //맵에 있는 총 목표점 갯수
     {
         totalGoalCount = 0;
 
@@ -264,7 +290,7 @@ public class TileMap : GameObject
             }
         }
     }
-    public int GetFilledGoalCount()
+    public int GetFilledGoalCount() //박스가 채워진 갯수 카운트 조회용 함수
     {
         int count = 0;
 
@@ -272,7 +298,7 @@ public class TileMap : GameObject
         {
             for (int x = 0; x < tileMap[y].Length; x++)
             {
-                if (tileMap[y][x] == '*') // 박스 + 목표
+                if (tileMap[y][x] == '*') 
                 {
                     count++;
                 }
@@ -280,6 +306,10 @@ public class TileMap : GameObject
         }
 
         return count;
+    }
+    private void OnTrapTriggered()
+    {
+        TrapTriggered?.Invoke();
     }
 
     //  클리어 조건

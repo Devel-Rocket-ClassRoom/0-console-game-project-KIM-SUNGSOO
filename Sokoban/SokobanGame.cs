@@ -9,7 +9,7 @@ public class SokobanGame : GameApp
 
     private int currentStage = 1;
 
-    private const int MAX_STAGE = 4;
+    private const int MAX_STAGE = 5;
 
 
     public SokobanGame() : base(40, 20)
@@ -50,6 +50,7 @@ public class SokobanGame : GameApp
     {
         var game = new SokobanGameScene(currentStage);
         game.StageCleared += ChangeToClear;
+        game.StageFailed += ChangeToFail;
 
         _scene.ChangeScene(game);
     }
@@ -81,7 +82,17 @@ public class SokobanGame : GameApp
 
         _scene.ChangeScene(final);
     }
+    private void ChangeToFail()
+    {
+        var fail = new FaileScene();
 
+        fail.RestartRequested += () =>
+        {
+            ChangeToPlay(); // 같은 스테이지 재시작
+        };
+
+        _scene.ChangeScene(fail);
+    }
 
 
 
