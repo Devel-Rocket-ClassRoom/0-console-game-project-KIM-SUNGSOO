@@ -27,18 +27,6 @@ public class TileMap : GameObject
             case 1:
                 return new string[]
                 {
-                "##########",
-                "#   P    #",
-                "#   B    #",
-                "#   B    #",
-                "#   X    #",
-                "#   X    #",
-                "##########"
-                };
-
-            case 2:
-                return new string[]
-                {
                     "  ###   ",
                     "  #X#   ",
                     "  # ####",
@@ -49,7 +37,7 @@ public class TileMap : GameObject
                     "   ###  "
                 };
 
-            case 3:
+            case 2:
                 return new string[]
                 {
                     "#####    ",
@@ -62,7 +50,7 @@ public class TileMap : GameObject
                     " #   ####",
                     " #####   "
                 };
-            case 4:
+            case 3:
                 return new string[]
                 {
                     " #######  ",
@@ -73,7 +61,7 @@ public class TileMap : GameObject
                     "##XX#   # ",
                     " ######## "
                 };
-            case 5:
+            case 4:
                 return new string[]
                 {
                     " #######   ###",
@@ -86,7 +74,18 @@ public class TileMap : GameObject
                     " # TXT     #  ",
                     " ###########  ",
                 };
-
+            case 5:
+                return new string[]
+                {
+                    " #### ",
+                    "##  # ",
+                    "#PB # ",
+                    "##B ##",
+                    "## B #",
+                    "#XB  #",
+                    "#XX*X#",
+                    "######"
+                };
                 default:
                 return new string[]
                 {
@@ -113,10 +112,11 @@ public class TileMap : GameObject
     {
         switch (stageIndex)
         {
-            case 1: return 20;
-            case 2: return 15;
-            case 3: return 100;
-            case 4: return 120;
+            case 1: return 200;
+            case 2: return 100;
+            case 3: return 120;
+            case 4: return 150;
+            case 5: return 300;
             default: return 100;
         }
     }
