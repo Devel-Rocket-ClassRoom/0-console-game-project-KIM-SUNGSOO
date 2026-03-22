@@ -8,6 +8,11 @@ public class TileMap : GameObject
 
     public event Action TrapTriggered;
 
+
+    public event Action MoveLimitExceeded;
+
+    private int moveLimit;
+
     private int totalGoalCount = 0;
     private int playerPosX;
     private int playerPosY;
@@ -104,12 +109,22 @@ public class TileMap : GameObject
     const char PLAYER_ON_GOAL = '+'; //플레이어가 골인지점위에 있을때
     const char TRAP = 'T'; //캐릭터가 밟으면 게임이 실패하는 함정
 
-    
+    private int GetMoveLimit(int stageIndex)
+    {
+        switch (stageIndex)
+        {
+            case 1: return 20;
+            case 2: return 15;
+            case 3: return 100;
+            case 4: return 120;
+            default: return 100;
+        }
+    }
     public TileMap(Scene scene, int stageIndex) : base(scene)
     {
         tileMap = LoadStage(stageIndex);
         CountGoals();
-
+        moveLimit = GetMoveLimit(stageIndex);
         //  플레이어 위치 찾기
         for (int y = 0; y < tileMap.Length; y++)
         {
@@ -168,6 +183,7 @@ public class TileMap : GameObject
         }
         buffer.WriteText(0,tileMap.Length+1 , $"총 이동 횟수 {moveCount}번", ConsoleColor.White);
         buffer.WriteText(0, tileMap.Length + 2, $"현재 채워진 목표점 {GetFilledGoalCount()}/전체 목표수 {totalGoalCount}");
+        buffer.WriteText(0, tileMap.Length + 3,$"Moves: {moveCount} / {moveLimit}", ConsoleColor.Yellow);
     }
 
     //  타일 수정
@@ -219,7 +235,7 @@ public class TileMap : GameObject
     {
         int nextX = playerPosX + dx;
         int nextY = playerPosY + dy;
-
+        
         int nextNextX = playerPosX + dx * 2;
         int nextNextY = playerPosY + dy * 2;
 
@@ -257,9 +273,21 @@ public class TileMap : GameObject
             MoveBox(nextX, nextY, nextNextX, nextNextY);
             MovePlayer(nextX, nextY);
             moveCount++;
+            CheckMoveLimit();
         }
     }
 
+    private void OnMoveLimitExceeded()
+    {
+        MoveLimitExceeded?.Invoke();
+    }
+    private void CheckMoveLimit()
+    {
+        if (moveCount > moveLimit)
+        {
+            OnMoveLimitExceeded();
+        }
+    }
     //  입력 처리
     void HandleInput()
     {

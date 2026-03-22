@@ -25,6 +25,7 @@ public class SokobanGameScene : Scene
     {
         map = new TileMap(this, stageIndex);
         map.TrapTriggered += OnStageFailed;
+        map.MoveLimitExceeded += OnStageFailed;
         AddGameObject(map);
 
     }
