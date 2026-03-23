@@ -112,12 +112,12 @@ public class TileMap : GameObject
     {
         switch (stageIndex)
         {
-            case 1: return 200;
+            case 1: return 15;
             case 2: return 100;
             case 3: return 120;
             case 4: return 150;
             case 5: return 300;
-            default: return 100;
+            default: return 110;
         }
     }
     public TileMap(Scene scene, int stageIndex) : base(scene)
@@ -255,6 +255,7 @@ public class TileMap : GameObject
         {
             MovePlayer(nextX, nextY);
             moveCount++;
+            CheckMoveLimit();
         }
         // 박스
         else if (nextTile == BOX || nextTile == BOX_ON_GOAL)
@@ -283,7 +284,7 @@ public class TileMap : GameObject
     }
     private void CheckMoveLimit()
     {
-        if (moveCount > moveLimit)
+        if (moveCount >= moveLimit)
         {
             OnMoveLimitExceeded();
         }
